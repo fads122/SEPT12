@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodiGrow Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<mat-toolbar>
+    <img src="assets/logo.png" alt="Logo" class="logo"  style="margin-right: -150px;">
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="search" placeholder="Search">
+        <button type="submit">
+            <img src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
+        </button>
+    </div>
+    <!-- Plus Icon Button -->
+    <button mat-icon-button  routerLink="/create-exam" style="margin-right: -20%;">
+      <mat-icon>add</mat-icon>
+    </button>
+    <!-- Notification Icon -->
+    <button  mat-icon-button style="margin-right: -10%;">
+    <mat-icon class="notification-icon" >notifications</mat-icon>
+    </button>
+    <!-- User Name -->
+    <span class="user-name" style="margin-right: 10%;">User Name</span>
+</mat-toolbar>
+<div class="side-bar">
+    <ul>
+        <li><i class="fas fa-home"></i><a routerLink="/teacher-dashboard">Home</a></li>
+        <li><i class="fas fa-file-alt"></i><a routerLink="/reports">Reports</a></li>
+        <li><i class="fas fa-user-graduate"></i> My Class</li>
+    </ul>
+
+</div>
+<body>
+
+    <div class="container">
+        <div class="card blue">
+            <div class="header">
+                <span>Juan De La Cruz</span>
+                <div class="menu">...</div>
+            </div>
+            <div class="circle"></div>
+        </div>
+        <div class="card yellow">
+            <div class="header">
+                <span>Juan De La Cruz</span>
+                <div class="menu">...</div>
+            </div>
+            <div class="circle"></div>
+        </div>
+        <div class="card blue">
+            <div class="header">
+                <span>Juan De La Cruz</span>
+                <div class="menu">...</div>
+            </div>
+            <div class="circle"></div>
+        </div>
+        <div class="card yellow">
+            <div class="header">
+                <span>Juan De La Cruz</span>
+                <div class="menu">...</div>
+            </div>
+            <div class="circle"></div>
+        </div>
+        <div class="card blue">
+            <div class="header">
+                <span>Juan De La Cruz</span>
+                <div class="menu">...</div>
+            </div>
+            <div class="circle"></div>
+        </div>
+        <div class="card yellow">
+            <div class="header">
+                <span>Juan De La Cruz</span>
+                <div class="menu">...</div>
+            </div>
+            <div class="circle"></div>
+        </div>
+    </div>
+
+</body>
+</html>

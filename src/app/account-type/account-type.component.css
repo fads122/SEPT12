@@ -1,0 +1,97 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  /* display: flex; */
+  /* justify-content: center;
+  align-items: center; */
+
+}
+.mat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #D6D7DC;
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+.logo {
+  height: 130px;
+  width: auto;
+  margin-right: 0px;
+}
+.box{
+  display: grid;
+  margin-top: 100px;
+  justify-content: center;
+  align-items: center;
+}
+.gap {
+  display: flex;
+  gap: 20px;
+}
+.container {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px; /* Adjust width as needed */
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.account-type-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.account-type-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.account-types {
+  display: flex;
+  justify-content: space-around;
+}
+
+.account-type {
+  flex: 1; /* Make each account type box occupy half the width */
+  text-align: center;
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer; /* Simulate button behavior */
+  transition: background-color 0.2s ease; /* Add hover effect */
+}
+
+.account-type:hover {
+  background-color: #eee; /* Optional hover background color */
+}
+
+.account-type i {
+  font-size: 40px; /* Adjust icon size as needed */
+  margin-bottom: 10px;
+}
+
+.account-type h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Add styles for your professor and student icons here */
+.professor-icon {
+  /* Replace with your professor icon code */
+  color: #007bff; /* Example professor icon color */
+}
+
+.student-icon {
+  /* Replace with your student icon code */
+  color: #ffc107; /* Example student icon color */
+}
+.account-type a img {
+  display: block; /* Makes the image behave like a block-level element */
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto; /* Centers the image if it's smaller than its container */
+}

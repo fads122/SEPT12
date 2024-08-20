@@ -1,0 +1,294 @@
+
+.mat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #D6D7DC;
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+.logo {
+  height: 130px;
+  width: auto;
+  margin-right: 0px;
+}
+
+.mat-select {
+  margin-right: 0px;
+  color: black;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 5px 15px;
+  background-color: #f0f0f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  background: none;
+  flex: 1;
+  padding: 10px 0;
+  font-size: 16px;
+  border-radius: 25px;
+}
+
+.search-container input::placeholder {
+  color: #888;
+}
+
+.search-container button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.search-container button img {
+  width: 20px;
+  height: 20px;
+}
+.user-name {
+  margin-right: 0px;
+}
+button[mat-icon-button] {
+  --mat-icon-button-size: 36px;
+  margin-right: 100px; /* Adjust this value to reduce the gap */
+}
+.notification-icon {
+  margin-right: 100px;
+}
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.side-bar {
+  top: 0;
+  position: relative;
+  background-color: #D6D7DC;
+  width: 20%;
+  height: 100%;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  padding-top: 30px;
+}
+
+.side-bar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-bar ul li {
+  padding: 10px 15px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.side-bar ul li:hover {
+  background-color: #888;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.side-bar ul li a {
+  color: inherit;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+.form-item {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-item label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-item select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.main-content {
+  width: 80%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+#question {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.upload {
+  margin-bottom: 20px;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.upload-input {
+  display: none;
+}
+
+.choices {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 20px;
+
+}
+
+.choice {
+  width: 35%;
+  padding: 70px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#choice-a { background-color: #f44336; }
+#choice-b { background-color: #ffeb3b; color: #000; }
+#choice-c { background-color: #2196f3; }
+#choice-d { background-color: #4caf50; }
+
+.save-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Existing styles remain unchanged */
+
+/* Additional styles for exam creation */
+
+.main-content input[type="text"] {
+  width: 100%; /* Full width for text inputs */
+  padding: 10px; /* Padding for text inputs */
+  margin-bottom: 10px; /* Spacing between inputs */
+  border: 1px solid #ccc; /* Border for text inputs */
+  border-radius: 5px; /* Rounded corners for text inputs */
+  font-size: 16px; /* Font size for text inputs */
+}
+
+.main-content button {
+  padding: 10px 20px; /* Padding for buttons */
+  background-color: #007bff; /* Blue background for buttons */
+  color: #ffffff; /* White text for buttons */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners for buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-top: 10px; /* Top margin for spacing */
+}
+
+.main-content button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.form-item select {
+  width: 100%; /* Full width for selects */
+  padding: 5px; /* Padding for selects */
+  border: 1px solid #ccc; /* Border for selects */
+  border-radius: 5px; /* Rounded corners for selects */
+  font-size: 16px; /* Font size for selects */
+}
+
+/* Styles for question and answer inputs within .form-item */
+.form-item input[type="text"] {
+  width: calc(100% - 20px); /* Adjust width for spacing */
+  margin-bottom: 5px; /* Spacing between inputs */
+}
+
+.form-item label {
+  display: block; /* Ensure labels are on their own line */
+  margin-bottom: 5px; /* Space below labels */
+}
+
+/* Style for checkboxes to align with text */
+.form-item input[type="checkbox"] {
+  margin-top: 10px; /* Align checkbox with text */
+}
+
+/* Highlight selected choice */
+.choice:hover {
+  opacity: 0.8; /* Slightly transparent on hover */
+}
+
+/* Active state for buttons */
+button:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+
+/* Sidebar link styling */
+.side-bar ul li a {
+  color: inherit; /* Text color */
+  text-decoration: none; /* Remove underline */
+  margin-left: 10px; /* Space from icon */
+}
+
+.side-bar ul li:hover a {
+  color: #ffffff; /* White text on hover */
+}
+
+/* Active sidebar item */
+.side-bar ul li.active {
+  background-color: #555; /* Darker background for active */
+}
+
+/* Adjustments for icons in toolbar */
+.mat-toolbar .fa-home, .mat-toolbar .fas.fa-file-alt, .mat-toolbar .fas.fa-user-graduate {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+/* Adjustments for notification and add icons */
+.notification-icon {
+  font-size: 24px; /* Larger icons */
+}
+
+/* Style for the exam title input */
+.main-content input[type="text"] {
+  font-size: 20px; /* Larger font size for title input */
+  padding: 15px; /* More padding for comfort */
+  border: 2px solid #ccc; /* Thicker border for emphasis */
+}
+
+/* Style for add question and save buttons */
+button[click] {
+  margin-top: 20px; /* Spacing above buttons */
+}

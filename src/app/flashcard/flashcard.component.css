@@ -1,0 +1,84 @@
+.mat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #D6D7DC;
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+.logo {
+  height: 130px;
+  width: auto;
+  margin-right: 0px;
+}
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #e0e0e0;
+}
+
+header {
+  background-color: #3f51b5;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-text {
+  flex-grow: 1;
+}
+
+.header-text h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.header-buttons button {
+  background-color: transparent;
+  color: rgb(26, 20, 20);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.header-buttons button:hover {
+  background-color: #2e378c;
+}
+
+main {
+  padding: 20px;
+}
+
+.flashcard-container {
+  background-color: white;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+
+.mat-form-field{
+  width: 200%;
+}
+.add-button {
+  margin-left: 70px;
+  width: 90%;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center; /* Center button content vertically */
+  cursor: pointer; /* Indicate clickable behavior */
+}
+
+.add-button span {
+  margin-right: 10px; /* Add space between plus sign and text */
+  font-size: 20px; /* Adjust plus sign size if needed */
+}

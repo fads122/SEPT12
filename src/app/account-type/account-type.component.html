@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Account Type</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+    <mat-toolbar>
+        <img src="assets/logo.png" alt="Logo" class="logo"  style="margin-right: -150px;">
+    </mat-toolbar>
+
+<div class="box">
+    <div class="account-type-header">
+        <h2>Choose Your Account Type</h2>
+      </div>
+<div class="gap">
+    <div class="container">
+        <div class="account-type professor">
+          <a (click)="navigateToSignUp('professor')" class="account-type professor">
+          <img src="assets/Group6.png">
+          <i class="student-icon"></i>
+          <h3>Professor</h3>
+          </a>
+      </div>
+      </div>
+  <div class="container">
+      <div class="account-type student">
+        <a (click)="navigateToSignUp('student')" class="account-type student">
+        <img src="assets/Group6.png">
+        <i class="student-icon"></i>
+        <h3>Student</h3>
+        </a>
+    </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

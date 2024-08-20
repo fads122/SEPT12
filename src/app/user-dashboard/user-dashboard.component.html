@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodiGrow Dashboard</title>
+</head>
+<mat-toolbar>
+    <img src="assets/logo.png" alt="Logo" class="logo" style="margin-right: -150px;">
+
+    <!-- Library Dropdown -->
+    <mat-select placeholder="Library" style="width: 8%; margin-right: -150px;">
+        <mat-option *ngFor="let library of libraries" [value]="library.value" style="margin-right: -200px;">
+            {{library.viewValue}}
+        </mat-option>
+    </mat-select>
+    <!-- Study Tool Dropdown -->
+    <mat-select placeholder="Study Tool" style="width: 8%; margin-right: -150px;" (valueChange)="navigateToTool($event)">
+        <mat-option *ngFor="let tool of studyTools" [value]="tool" (click)="navigateToTool(tool)" style="cursor: pointer;">
+        {{tool?.viewValue}} <!-- Use safe navigation operator -->
+        </mat-option>
+    </mat-select>
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="search" placeholder="Search">
+        <button type="submit">
+            <img src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
+        </button>
+    </div>
+    <button (click)="onLogout()">Logout</button>
+    <!-- User Name -->
+    <span class="user-name">User Name</span>
+    <!-- Notification Icon -->
+    <mat-icon class="notification-icon">notifications</mat-icon>
+</mat-toolbar>
+<body>
+  <header>
+    <div class="user-info">
+      <button><a routerLink="/join-exam">JOIN EXAM</a></button>
+      <button><a routerLink="/quiz">JOIN QUIZ</a></button>
+      <button><a routerLink="/flashcard">Create Flash Cards</a></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="flash-cards">
+      <h2>Flash Cards</h2>
+      <div class="gap">
+        <div *ngFor="let flashcard of flashcards" class="card">
+          <h3>{{ flashcard.title }}</h3>
+          <p>{{ flashcard.content }}</p> <!-- Add this line to display the flashcard content -->
+        </div>
+      </div>
+    </section>
+    <section class="upload-materials">
+      <h2>Upload Study Materials</h2>
+      <div class="note">
+        <p>Paste Your Notes</p>
+        <p>Upload File</p>
+        <input type="file" id="file">
+      </div>
+    </section>
+    <section class="study-materials">
+      <h2>Study Materials</h2>
+      <div class="list">
+        <div class="not">
+          <h3>SOL COMMANDS</h3>
+        </div>
+        <div class="not">
+          <h3>Physics Equations</h3>
+        </div>
+        <div class="not">
+          <h3>Physics Equations</h3>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

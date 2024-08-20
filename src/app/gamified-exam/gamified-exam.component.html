@@ -1,0 +1,37 @@
+<div class="page-indicator">
+  <span>Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}</span>
+</div>
+
+<main>
+  <!-- Countdown Timer -->
+  <div *ngIf="showCountdown">
+    <h2>Get Ready!</h2>
+    <div class="countdown">{{ countdown }}</div>
+  </div>
+
+ <!-- Question Section -->
+<div class="question-box" *ngIf="showQuestion && questions.length > 0">
+  <!-- Defensive check to ensure the question is defined -->
+  <h2 *ngIf="questions[currentQuestionIndex]?.question_text">
+    {{ questions[currentQuestionIndex].question_text }}
+  </h2>
+  <div class="question-timer">Time Left: {{ questionTimer }} seconds</div>
+</div>
+
+  <!-- Answer Choices Section -->
+  <div class="answer-choices" *ngIf="showChoices && shuffledAnswers.length > 0; else noAnswers">
+    <div *ngFor="let answer of shuffledAnswers; let i = index"
+         class="choice"
+         #choiceElement
+         [ngClass]="{
+           'correct': answer === correctAnswer,
+           'incorrect': selectedAnswer && answer !== correctAnswer && answer === selectedAnswer
+         }"
+         (click)="checkAnswer(answer)">
+      <span>{{ answer.answer_text }}</span>
+    </div>
+  </div>
+  <ng-template #noAnswers>
+    <p>No answers available.</p>
+  </ng-template>
+</main>

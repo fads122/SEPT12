@@ -1,0 +1,8 @@
+<!-- waiting-room.component.html -->
+<div class="waiting-room-container">
+  <h3>Waiting Room</h3>
+  <ul>
+    <li *ngFor="let participant of participants">{{ participant }}</li>
+  </ul>
+  <button *ngIf="isTeacher" (click)="startExam()">Start Exam</button>
+</div>

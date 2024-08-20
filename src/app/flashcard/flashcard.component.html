@@ -1,0 +1,33 @@
+<mat-toolbar>
+  <img src="assets/logo.png" alt="Logo" class="logo" style="margin-right: -150px;">
+</mat-toolbar>
+
+<main>
+  <form (ngSubmit)="onSubmit()" #flashcardForm="ngForm">
+    <div class="flashcard-container">
+      <mat-form-field appearance="fill" style="padding-right: 30px; margin-left: 40px; width: 50%;">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title" [(ngModel)]="flashcard.title" name="title" required>
+        <mat-icon matSuffix>create</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="margin-left: 40px; width: 50%;">
+        <mat-label>Content</mat-label>
+        <textarea matInput placeholder="Content" [(ngModel)]="flashcard.content" name="content" required></textarea>
+        <mat-icon matSuffix>edit</mat-icon>
+      </mat-form-field>
+      <div class="header-buttons" style="padding-right: 30px; margin-left: 40px;">
+        <button mat-icon-button type="submit">
+          <span>Create Flashcard</span>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <section class="flashcard-list" *ngIf="flashcards.length">
+    <h2>My Flashcards</h2>
+    <div *ngFor="let card of flashcards" class="flashcard-item">
+      <h3>{{ card.title }}</h3>
+      <p>{{ card.content }}</p>
+    </div>
+  </section>
+</main>
