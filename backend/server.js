@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
@@ -45,6 +43,15 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+const primaryKeyMapping = {
+  users: 'user_id',
+  flashcards: 'flashcard_id',
+  exams: 'exam_id',
+  questions: 'question_id',
+  answers: 'answer_id',
+};
+
 
 // Generate a unique exam code
 const generateExamCode = () => {
@@ -101,7 +108,7 @@ function handleSubmitAnswer(data, ws) {
     const [rows] = await pool.execute('SELECT answer_id FROM answers WHERE question_id = ? AND is_correct = 1', [questionId]);
     return rows.length > 0 ? rows[0].answer_id : null;
   };
-
+  
   getCorrectAnswer(examId, questionId).then(correctAnswer => {
     if (answerId === correctAnswer) {
       // Calculate ranking based on time taken
@@ -144,6 +151,23 @@ app.post('/signup', async (req, res) => {
     res.status(500).send({ message: 'Server error.' });
   }
 });
+
+
+
+// Add this inside your server.js file
+
+app.post('/admin/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (email === 'admin' && password === 'admin') {
+    // In a real application, never hardcode credentials and always hash passwords
+    const token = jwt.sign({ email }, JWT_SECRET); // No `expiresIn` option, so it doesn't expire
+    res.status(200).send({ message: 'Admin login successful', token });
+  } else {
+    res.status(401).send({ message: 'Invalid credentials' });
+  }
+});
+
+
 
 
 app.post('/signin', async (req, res) => {
@@ -266,7 +290,6 @@ app.post('/exams', authenticateToken, async (req, res) => {
   }
 });
 
-// Create question route
 app.post('/questions', authenticateToken, async (req, res) => {
   const { examId, questionText, questionType, timeLimit } = req.body;
   const userId = req.user.userId;
@@ -283,6 +306,7 @@ app.post('/questions', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Error creating question:', error);
     res.status(500).send({ message: 'Error creating question', error: error.message });
+
   }
 });
 
@@ -295,6 +319,18 @@ app.post('/answers', authenticateToken, async (req, res) => {
   }
 
   try {
+    // Check if the question exists
+    const [questionRows] = await pool.execute('SELECT * FROM questions WHERE question_id = ?', [questionId]);
+    if (questionRows.length === 0) {
+      return res.status(404).send({ message: 'Question not found' });
+    }
+
+    // Check if there are already 4 answers for this question
+    const [answerRows] = await pool.execute('SELECT COUNT(*) AS count FROM answers WHERE question_id = ?', [questionId]);
+    if (answerRows[0].count >= 4) {
+      return res.status(400).send({ message: 'A question can only have up to 4 choices.' });
+    }
+
     const sql = 'INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?)';
     await pool.execute(sql, [questionId, answerText, isCorrect]);
 
@@ -384,6 +420,203 @@ app.post('/logout', authenticateToken, (req, res) => {
   // Here, just inform the client to remove the token on their side
   res.status(200).send({ message: 'Logged out successfully' });
 });
+
+// Route to fetch records from a table (no token authentication)
+app.get('/api/admin/tables/:tableName', async (req, res) => {
+  const { tableName } = req.params;
+
+  try {
+    const [rows] = await pool.query('SELECT * FROM ??', [tableName]);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Error fetching data');
+  }
+});
+
+
+// Route to update a record in a table
+app.put('/api/admin/tables/:tableName/:id', (req, res) => {
+  const tableName = req.params.tableName;
+  const id = req.params.id;
+  const updates = req.body;
+
+  // Map table names to primary key columns if necessary
+  const primaryKeyMapping = {
+    'users': 'user_id',
+    'flashcards': 'flashcard_id',
+    'exams': 'exam_id',
+    'questions': 'question_id',
+    'answers': 'answer_id'
+  };
+
+  const primaryKey = primaryKeyMapping[tableName];
+  if (!primaryKey) {
+    return res.status(400).send('Table not found or unsupported');
+  }
+
+  const sql = `UPDATE ${tableName} SET ? WHERE ${primaryKey} = ?`;
+  const values = [updates, id];
+
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.error('Error updating record:', error);
+      return res.status(500).send('Error updating record');
+    }
+    res.status(200).send('Record updated successfully');
+  });
+});
+
+
+/// Route to delete a record from a table
+app.delete('/api/admin/tables/:tableName/:id', (req, res) => {
+  const tableName = req.params.tableName;
+  const id = req.params.id;
+
+  // Map table names to primary key columns if necessary
+  const primaryKeyMapping = {
+    'users': 'user_id',
+    'flashcards': 'flashcard_id',
+    'exams': 'exam_id',
+    'questions': 'question_id',
+    'answers': 'answer_id'
+  };
+
+  const primaryKey = primaryKeyMapping[tableName];
+  if (!primaryKey) {
+    return res.status(400).send('Table not found or unsupported');
+  }
+
+  if (!id) {
+    return res.status(400).send('Record ID is missing');
+  }
+
+  const sql = `DELETE FROM ${tableName} WHERE ${primaryKey} = ?`;
+  console.log('SQL Query:', sql);
+  const values = [id];
+
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.error('Error deleting record:', error);
+      return res.status(500).send('Error deleting record');
+    }
+    res.status(200).send('Record deleted successfully');
+  });
+});
+
+
+app.get('/api/admin/users', async (req, res) => {
+  try {
+    const [users] = await pool.execute('SELECT * FROM users');
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/admin/flashcards', async (req, res) => {
+  try {
+    const [flashcards] = await pool.execute('SELECT * FROM flashcards');
+    res.json(flashcards);
+  } catch (error) {
+    console.error('Error fetching flashcards:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/admin/exams', async (req, res) => {
+  try {
+    const [exams] = await pool.execute('SELECT * FROM exams');
+    res.json(exams);
+  } catch (error) {
+    console.error('Error fetching exams:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/admin/questions', async (req, res) => {
+  try {
+    const [questions] = await pool.execute('SELECT * FROM questions');
+    res.json(questions);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/admin/answers', async (req, res) => {
+  try {
+    const [answers] = await pool.execute('SELECT * FROM answers');
+    res.json(answers);
+  } catch (error) {
+    console.error('Error fetching answers:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/admin/tables', async (req, res) => {
+  try {
+    const tables = ['users', 'flashcards', 'exams', 'questions', 'answers']; // List of tables/entities you want to expose
+    res.json(tables);
+  } catch (error) {
+    console.error('Error fetching table names:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/admin/tables/users', authenticateToken, async (req, res) => {
+  try {
+    // Only allow admins to access this route
+    if (req.user.accountType !== 'admin') {
+      return res.status(403).send({ message: 'Access denied' });
+    }
+
+    const [users] = await pool.execute('SELECT * FROM users');
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+// Route to fetch data for the admin dashboard
+app.get('/api/admin/viewData', async (req, res) => {
+  try {
+    // Example: Fetch all users (you can modify this query based on your specific data requirements)
+    const [rows] = await pool.execute('SELECT * FROM users');
+
+    // Send the fetched data as a response
+    res.status(200).json({ data: rows });
+  } catch (error) {
+    console.error('Error fetching data for admin:', error);
+    res.status(500).send({ message: 'Server error fetching admin data.' });
+  }
+});
+
+
+
+app.get('/api/exam-results/:examId', async (req, res) => {
+  const { examId } = req.params;
+  try {
+    // Fetch exam results from the database
+    const [results] = await pool.query(`
+      SELECT u.name as studentName, r.score
+      FROM results r
+      JOIN users u ON r.user_id = u.user_id
+      WHERE r.exam_id = ?
+      ORDER BY r.score DESC
+    `, [examId]);
+
+    res.json(results);
+  } catch (error) {
+    console.error('Error fetching exam results:', error);
+    res.status(500).send('Error fetching exam results');
+  }
+});
+
+
+
 
 
 server.listen(port, () => {
