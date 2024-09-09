@@ -17,4 +17,8 @@ export class AccountTypeComponent {
   navigateToSignIn(accountType: string) {
     this.router.navigate(['/sign-in'], { queryParams: { accountType: accountType } });
   }
+
+  navigateToAdminLogin() {
+    this.router.navigate(['/admin/login']);
+  }
 }

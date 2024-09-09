@@ -5,62 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <title>Create Exam</title>
+  <style>
+    /* Add styles for countdown timer */
+    .countdown {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    /* Styles for color-coded answer choices */
+    .answer-block {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .answer-block input[type="text"] {
+      flex-grow: 1;
+    }
+
+    .answer-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    .red { background-color: red; }
+    .blue { background-color: blue; }
+    .yellow { background-color: yellow; }
+    .green { background-color: green; }
+  </style>
 </head>
 <body>
   <mat-toolbar>
-    <img src="assets/logo.png" alt="Logo" class="logo" style="margin-right: -150px;">
+    <img src="assets/logo.png" alt="Logo" class="logo">
     <div class="search-container">
-        <input type="search" placeholder="Search">
-        <button type="submit">
-            <img src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
-        </button>
+      <input type="search" placeholder="Search">
+      <button type="submit">
+        <img src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
+      </button>
     </div>
-    <button mat-icon-button style="margin-right: -20%;">
-        <mat-icon class="notification-icon">add</mat-icon>
+    <button mat-icon-button>
+      <mat-icon class="notification-icon">add</mat-icon>
     </button>
-    <button mat-icon-button style="margin-right: -10%;">
-        <mat-icon class="notification-icon">notifications</mat-icon>
+    <button mat-icon-button>
+      <mat-icon class="notification-icon">notifications</mat-icon>
     </button>
-    <span class="user-name" style="margin-right: 10%;">{{ userName }}</span>
+    <span class="user-name">{{ userName }}</span>
   </mat-toolbar>
   <div class="container">
     <div class="side-bar">
-        <ul>
-            <li><i class="fas fa-home"></i><a routerLink="/teacher-dashboard">Home</a></li>
-            <li><i class="fas fa-file-alt"></i><a routerLink="/reports">Reports</a></li>
-            <li><i class="fas fa-user-graduate"></i> My Class</li>
-        </ul>
+      <ul>
+        <li><i class="fas fa-home"></i><a routerLink="/teacher-dashboard">Home</a></li>
+        <li><i class="fas fa-file-alt"></i><a routerLink="/reports">Reports</a></li>
+        <li><i class="fas fa-user-graduate"></i> My Class</li>
+      </ul>
     </div>
     <div class="main-content">
-        <input type="text" [(ngModel)]="examTitle" placeholder="Enter exam title...">
-        <div *ngFor="let question of questions; let i = index">
-            <input type="text" [(ngModel)]="question.questionText" placeholder="Enter question here...">
-            <div class="form-item">
-                <label for="question-type-{{i}}">Question Type</label>
-                <select id="question-type-{{i}}" [(ngModel)]="question.questionType">
-                    <option value="multiple-choice">Multiple Choice</option>
-                    <option value="true-false">True/False</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="time-limit-{{i}}">Time Limit</label>
-                <select id="time-limit-{{i}}" [(ngModel)]="question.timeLimit">
-                    <option value="5">5 seconds</option>
-                    <option value="10">10 seconds</option>
-                    <option value="20">20 seconds</option>
-                    <option value="30">30 seconds</option>
-                </select>
-            </div>
-            <div *ngIf="question.questionType === 'multiple-choice'">
-                <div *ngFor="let answer of question.answers; let j = index">
-                    <input type="text" [(ngModel)]="answer.answerText" placeholder="Enter answer here...">
-                    <input type="checkbox" [(ngModel)]="answer.isCorrect"> Correct
-                </div>
-                <button (click)="addAnswer(i)">Add Answer</button>
-            </div>
+      <h1>Create Exam</h1>
+      <form (ngSubmit)="createExam()">
+        <div class="form-item">
+          <label for="examTitle">Exam Title</label>
+          <input type="text" id="examTitle" [(ngModel)]="examTitle" name="examTitle" required>
         </div>
-        <button (click)="addQuestion()">Add Question</button>
-        <button (click)="createExam()">Save</button>
+        <div class="form-item">
+          <label for="subject">Subject</label>
+          <select id="subject" [(ngModel)]="selectedSubject" name="subject" required>
+            <option value="">-- Select a Subject --</option>
+            <option *ngFor="let subject of subjects" [value]="subject.subject_id">{{ subject.subject_name }}</option>
+          </select>
+        </div>
+        <!-- Rest of your HTML content remains unchanged -->
+        <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="question-container">
+          <div *ngFor="let question of questions; let i = index"
+               cdkDrag
+               class="question-block"
+               [class.active]="currentQuestionIndex === i"
+               (click)="setCurrentQuestion(i)">
+            <div class="form-item">
+              <label for="questionText-{{i}}">Question</label>
+              <input type="text" id="questionText-{{i}}" [(ngModel)]="question.questionText" name="questionText-{{i}}" required>
+            </div>
+            <div class="form-item">
+              <label for="questionType-{{i}}">Question Type</label>
+              <select id="questionType-{{i}}" [(ngModel)]="question.questionType" name="questionType-{{i}}">
+                <option value="multiple-choice">Multiple Choice</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <label for="timeLimit-{{i}}">Time Limit</label>
+              <select id="timeLimit-{{i}}" [(ngModel)]="question.timeLimit" name="timeLimit-{{i}}">
+                <option value="5">5 seconds</option>
+                <option value="10">10 seconds</option>
+                <option value="20">20 seconds</option>
+                <option value="30">30 seconds</option>
+              </select>
+            </div>
+            <div *ngIf="question.questionType === 'multiple-choice'" class="answers-section">
+              <div *ngFor="let answer of question.answers; let j = index" class="answer-block">
+                <div class="answer-color" [ngClass]="getAnswerColor(j)"></div>
+                <div class="form-item">
+                  <label for="answerText-{{i}}-{{j}}">Answer</label>
+                  <input type="text" id="answerText-{{i}}-{{j}}" [(ngModel)]="answer.answerText" name="answerText-{{i}}-{{j}}" required>
+                </div>
+                <div class="form-item">
+                  <input type="checkbox" id="isCorrect-{{i}}-{{j}}" [(ngModel)]="answer.isCorrect" name="isCorrect-{{i}}-{{j}}">
+                  <label for="isCorrect-{{i}}-{{j}}">Correct</label>
+                </div>
+              </div>
+              <button type="button" (click)="addAnswer(i)">Add Answer</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" (click)="addQuestion()">Add Question</button>
+        <button type="submit" [disabled]="!isExamComplete()">Save</button>
+      </form>
     </div>
   </div>
 </body>

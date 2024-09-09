@@ -1,0 +1,8 @@
+<mat-dialog-content class="app-flip-card">
+  <div *ngIf="!isFlipped" (click)="toggleFlip()" class="title-state">
+    <p>Title: {{ data.flashcard.title }}</p>
+  </div>
+  <div *ngIf="isFlipped" (click)="toggleFlip()" class="content-state">
+    <p>Content: {{ data.flashcard.content }}</p>
+  </div>
+</mat-dialog-content>

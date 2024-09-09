@@ -1,0 +1,27 @@
+/* Targeting mat-dialog-content globally */
+mat-dialog-content {
+  font-size: 18px; /* Increase font size for readability */
+}
+
+/* Making the .app-flip-card box wider */
+.app-flip-card mat-dialog-content {
+  width: 500px; /* Increased width to make the dialog wider */
+  height: 1084px; /* Keeping the height as previously set */
+  margin: auto; /* Center the dialog */
+  padding: 100px; /* Increased padding for more space */
+  border-radius: 15px; /* Increased border radius for softer edges */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Enhanced shadow for depth */
+}
+
+/* Differentiate between title and content states */
+.app-flip-card .title-state p {
+  background-color: #f0f0f0; /* Light grey background */
+  color: #333; /* Dark text for contrast */
+  padding: 15px; /* Increased padding for more spacing */
+}
+
+.app-flip-card .content-state p {
+  background-color: #fff; /* White background */
+  color: #666; /* Slightly lighter text */
+  padding: 20px; /* Increased padding for content */
+}

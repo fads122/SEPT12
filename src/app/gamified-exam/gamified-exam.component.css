@@ -2,15 +2,14 @@ body {
   font-family: sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #1438ee; /* Blue background */
-  overflow: hidden; /* Prevent scrollbars from appearing */
+  background-color: #001F54;
+  height: 100vh;
 }
-
 .mat-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #D6D7DC;
+  background-color: #F9EBE0;
   box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
 }
 
@@ -19,10 +18,9 @@ body {
   width: auto;
   margin-right: 0px;
 }
-
 header {
   margin-top: 60px;
-  background-color: #fff;
+  background-color: #F7F9F9;
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
@@ -57,39 +55,77 @@ header {
 
 main {
   padding: 20px;
-  position: relative;
-  height: 100vh;
 }
 
 .question-box {
   background-color: #fff;
   display: flex;
   align-items: center;
-  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .question-box h2 {
   font-size: 18px;
   margin-bottom: 15px;
+  margin-left: 450px;
 }
 
 .answer-choices {
-  position: relative;
+  grid: auto / auto auto auto;
+  flex-wrap: wrap;
+  padding-left: 100px;
+
+  display: flex;
+  justify-content: space-around;
   width: 100%;
-  height: 80%;
+  margin-bottom: 20px;
+  gap: 2%;
 }
 
 .choice {
-  position: absolute;
-  width: 120px;
-  height: 80px;
-  padding: 20px;
-  text-align: center;
+  margin-right: 200px;
+  margin-bottom: 80px;
+  padding: 50px 200px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  display: inline-block;
+  align-items: center;
   cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
+}
+
+/* Colors for choices */
+.choice:nth-child(1) {
+  background-color: #ffeb3b; /* Yellow */
+  color: #000; /* Black text for contrast */
+}
+
+.choice:nth-child(2) {
+  background-color: #2196f3; /* Blue */
+}
+
+.choice:nth-child(3) {
+  background-color: #ffeb3b; /* Yellow */
+  color: black;
+}
+
+.choice:nth-child(4) {
+  background-color: #4caf50; /* Green */
+}
+
+/* Choice hover and selected states */
+.choice:hover {
+  background-color: #e0e0e0;
+}
+
+.choice.correct {
+  border-color: #4caf50; /* Green border for correct answers */
+}
+
+.choice.incorrect {
+  border-color: #f44336; /* Red border for incorrect answers */
 }
 
 /* Floating shapes background */
@@ -131,48 +167,21 @@ body::after {
   }
 }
 
-/* Colors for choices */
-.choice:nth-child(1) {
-  background-color: #f44336; /* Red */
-  color: white;
-}
-
-.choice:nth-child(2) {
-  background-color: #2196f3; /* Blue */
-  color: white;
-}
-
-.choice:nth-child(3) {
-  background-color: #ffeb3b; /* Yellow */
-  color: black;
-}
-
-.choice:nth-child(4) {
-  background-color: #4caf50; /* Green */
-  color: white;
-}
-
 /* Media Query for Smaller Screens */
 @media (max-width: 768px) {
-  .logo {
-    margin-left: 10px;
-    height: 100px;
-    width: auto;
-    margin-right: 0;
-  }
-
-  .mat-toolbar {
-    flex-direction: row;
-  }
-
-  .page-indicator {
-    order: 2; /* Place the page indicator after the logo */
-    margin-left: 10px; /* Adjust margin for smaller screens */
-  }
-
   header {
     margin-top: 10px; /* Reduce top margin for smaller screens */
     padding: 5px 10px; /* Reduce padding for smaller screens */
+  }
+
+  .page-indicator {
+    margin-left: 10px; /* Adjust margin for smaller screens */
+    margin-top: 10px; /* Adjust margin for smaller screens */
+    color: #F2F5FF;
+  }
+
+  .page-indicator span{
+    color: #F2F5FF;
   }
 
   .question-box {
@@ -195,9 +204,6 @@ body::after {
     margin-bottom: 10px; /* Reduce bottom margin for smaller screens */
     padding: 20px 10px; /* Reduce padding for smaller screens */
     border-radius: 5px; /* Keep consistent styling */
-    display: flex; /* Use flexbox for better alignment */
-    align-items: center; /* Align items in the center */
-    cursor: pointer;
     width: 95%; /* Make each choice take full width */
   }
 

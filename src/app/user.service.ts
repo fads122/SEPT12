@@ -1,3 +1,4 @@
+// user.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
@@ -30,9 +31,9 @@ export class UserService {
   authenticate(email: string, password: string): Observable<SignInResponse> {
     return this.http.post<SignInResponse>('http://localhost:3000/signin', { email, password }).pipe(
       map((response: SignInResponse) => {
+        console.log('User ID stored:', response.user.userID);
         localStorage.setItem('token', response.token);
         localStorage.setItem('currentUser', JSON.stringify(response.user));
-        console.log('User ID stored:', response.user.userID); // Updated to use userID
         this.currentUserSubject.next(response.user);
         return response;
       }),
@@ -70,6 +71,11 @@ export class UserService {
       );
   }
 
+  updateCurrentUser(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
@@ -81,6 +87,11 @@ export class UserService {
     return currentUser ? JSON.parse(currentUser) : null;
   }
 
+  getUserID(): number | null {
+    const currentUser = this.getCurrentUser();
+    return currentUser ? parseInt(currentUser.userID, 10) : null;
+  }
+
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     return !!token;
@@ -89,5 +100,36 @@ export class UserService {
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error.message);
     return throwError(() => new Error('Something bad happened; please try again later.'));
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const userId = this.getUserID();
+    if (!userId) {
+      console.error('User ID not found');
+      return throwError(() => new Error('User ID not found'));
+    }
+
+    const headers = new HttpHeaders()
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'application/json');
+
+    const body = {
+      currentPassword,
+      newPassword,
+      userId // Add this line
+    };
+
+    return this.http.put(`http://localhost:3000/api/users/changepassword/${userId}`, body, { headers })
+      .pipe(
+        tap(() => {
+          console.log('Password changed successfully');
+        }),
+        catchError(this.handleError)
+      );
   }
 }

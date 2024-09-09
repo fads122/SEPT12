@@ -1,0 +1,61 @@
+<div class="admin-dashboard">
+  <h2>Admin Dashboard</h2>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <table *ngIf="tables.length">
+    <thead>
+      <tr>
+        <th>Table Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let table of tables">
+        <td>{{ table }}</td>
+        <td><button (click)="viewTable(table)">View Data</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Display records if any are fetched -->
+  <div *ngIf="records.length">
+    <h3>Records for Selected Table</h3>
+
+    <!-- Form to edit a record -->
+    <div *ngIf="editingRecord">
+      <h4>Edit Record</h4>
+      <form (ngSubmit)="updateRecord(editingRecord)">
+        <!-- Hidden input for ID -->
+        <input [(ngModel)]="editingRecord.id" name="id" type="hidden" />
+
+        <!-- Display editable fields for the record -->
+        <div *ngFor="let key of getRecordKeys(editingRecord)">
+          <label>{{ key }}:</label>
+          <input [(ngModel)]="editingRecord[key]" name="{{ key }}" />
+        </div>
+        <button type="submit">Update</button>
+        <button type="button" (click)="toggleEdit(null)">Cancel</button>
+      </form>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th *ngFor="let key of getRecordKeys(records[0])">{{ key }}</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of records">
+          <td *ngFor="let key of getRecordKeys(record)">
+            <span *ngIf="!isEditing(record)">{{ record[key] }}</span>
+            <input *ngIf="isEditing(record)" [(ngModel)]="record[key]" (blur)="updateRecord(record)" />
+          </td>
+          <td>
+            <button (click)="toggleEdit(record)">Edit</button>
+            <button (click)="deleteRecord(record.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

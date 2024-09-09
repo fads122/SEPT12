@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { FlashcardService } from '../flashcard.service'; // Ensure this import is present
+import { HttpClient } from '@angular/common/http';
 
 // Define the Flashcard interface
 interface Flashcard {
   title: string;
   content: string;
-  userID?: string; // Change userId to userID to match the service
+  userID?: string; // Optional userID field
 }
 
 @Component({
@@ -20,9 +21,10 @@ export class FlashcardComponent implements OnInit {
   flashcards: Flashcard[] = [];
 
   constructor(
-    private http: HttpClient,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient, // This seems unnecessary here unless used elsewhere in the component
+    private flashcardService: FlashcardService // Inject FlashcardService here
   ) {}
 
   ngOnInit(): void {
@@ -55,20 +57,12 @@ export class FlashcardComponent implements OnInit {
   }
 
   loadFlashcards(): void {
-    const currentUser = this.userService.getCurrentUser();
-    if (!currentUser) {
-      console.error('User not authenticated.');
-      return;
-    }
-
-    // Corrected query parameter name to match the server's expectation
-    this.http.get<Flashcard[]>(`http://localhost:3000/flashcards?userId=${currentUser.userID}`, { withCredentials: true })
-      .subscribe({
-        next: (response) => {
-          this.flashcards = response;
-        },
-        error: (err) => console.error('Error fetching flashcards', err)
-      });
+    this.flashcardService.getFlashcards().subscribe({
+      next: (response: any[]) => { // Specify type for response
+        this.flashcards = response;
+      },
+      error: (err: any) => console.error('Error fetching flashcards', err) // Specify type for err
+    });
   }
 
   private redirectUser(): void {

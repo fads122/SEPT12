@@ -31,7 +31,14 @@ import { GamifiedExamComponent } from './gamified-exam/gamified-exam.component';
 import { JoinExamComponent } from './join-exam/join-exam.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component'; // Import WaitingRoomComponent
 import { WebSocketService } from './web-socket.service';
-import { FlashcardDisplayComponent } from './flashcard-display/flashcard-display.component'; // Import WebSocketService
+import { FlashcardDisplayComponent } from './flashcard-display/flashcard-display.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { FetchFlashcardsDialog } from './dialogs/fetch-flashcards-dialog/fetch-flashcards-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -51,6 +58,10 @@ import { FlashcardDisplayComponent } from './flashcard-display/flashcard-display
     JoinExamComponent,
     WaitingRoomComponent,
     FlashcardDisplayComponent,
+    AdminLoginComponent,
+    AdminDashboardComponent,
+    FetchFlashcardsDialog,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +76,10 @@ import { FlashcardDisplayComponent } from './flashcard-display/flashcard-display
     RouterModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule,
+    MatDialogModule,
+    MatSidenavModule
   ],
   providers: [
     {

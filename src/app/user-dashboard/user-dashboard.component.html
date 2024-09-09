@@ -46,9 +46,9 @@
     <section class="flash-cards">
       <h2>Flash Cards</h2>
       <div class="gap">
-        <div *ngFor="let flashcard of flashcards" class="card">
+        <div *ngFor="let flashcard of flashcards" class="card" (click)="openFlashcardModal(flashcard)">
           <h3>{{ flashcard.title }}</h3>
-          <p>{{ flashcard.content }}</p> <!-- Add this line to display the flashcard content -->
+          <p>{{ flashcard.content }}</p>
         </div>
       </div>
     </section>

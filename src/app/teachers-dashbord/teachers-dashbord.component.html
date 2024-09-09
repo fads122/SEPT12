@@ -16,16 +16,19 @@
             <img src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
         </button>
     </div>
+    <button (click)="onLogout()">Logout</button>
+
     <!-- Plus Icon Button -->
     <button mat-icon-button  routerLink="/create-exam" style="margin-right: -20%;">
       <mat-icon>add</mat-icon>
     </button>
     <!-- Notification Icon -->
-    <button  mat-icon-button style="margin-right: -10%;">
+    <!-- <button  mat-icon-button style="margin-right: -10%;">
     <mat-icon class="notification-icon" >notifications</mat-icon>
-    </button>
+    </button> -->
     <!-- User Name -->
     <span class="user-name" style="margin-right: 10%;">User Name</span>
+    <button mat-raised-button color="primary" (click)="navigateToChangePassword()">Change Password</button>
 </mat-toolbar>
 <div class="side-bar">
     <ul>
@@ -33,54 +36,37 @@
         <li><i class="fas fa-file-alt"></i><a routerLink="/reports">Reports</a></li>
         <li><i class="fas fa-user-graduate"></i> My Class</li>
     </ul>
-
 </div>
 <body>
 
-    <div class="container">
-        <div class="card blue">
-            <div class="header">
-                <span>Juan De La Cruz</span>
-                <div class="menu">...</div>
-            </div>
-            <div class="circle"></div>
-        </div>
-        <div class="card yellow">
-            <div class="header">
-                <span>Juan De La Cruz</span>
-                <div class="menu">...</div>
-            </div>
-            <div class="circle"></div>
-        </div>
-        <div class="card blue">
-            <div class="header">
-                <span>Juan De La Cruz</span>
-                <div class="menu">...</div>
-            </div>
-            <div class="circle"></div>
-        </div>
-        <div class="card yellow">
-            <div class="header">
-                <span>Juan De La Cruz</span>
-                <div class="menu">...</div>
-            </div>
-            <div class="circle"></div>
-        </div>
-        <div class="card blue">
-            <div class="header">
-                <span>Juan De La Cruz</span>
-                <div class="menu">...</div>
-            </div>
-            <div class="circle"></div>
-        </div>
-        <div class="card yellow">
-            <div class="header">
-                <span>Juan De La Cruz</span>
-                <div class="menu">...</div>
-            </div>
-            <div class="circle"></div>
-        </div>
+  <!-- teachers-dashbord.component.html -->
+<div class="container">
+  <h2>Exams</h2>
+  <div *ngFor="let exam of exams">
+    {{ exam.title }}
+  </div>
+
+  <div *ngIf="subjectsWithExams && subjectsWithExams.length > 0; else noSubjects">
+    <h2>Subjects Created by You</h2>
+    <div *ngFor="let subject of subjectsWithExams" class="subject-card">
+      <h3>{{ subject.subject_name }}</h3>
+      <ul>
+        <li *ngFor="let exam of subject.exams">
+          {{ exam.title }} (Exam Code: {{ exam.exam_code }})
+        </li>
+      </ul>
     </div>
+  </div>
+  <ng-template #noSubjects>
+    <p>No subjects created yet.</p>
+  </ng-template>
+
+  <h2>Create New Subject</h2>
+  <form (ngSubmit)="createSubject()">
+    <input [(ngModel)]="newSubjectName" name="subjectName" placeholder="Enter new subject name">
+    <button type="submit">Create Subject</button>
+  </form>
+</div>
 
 </body>
 </html>

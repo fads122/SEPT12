@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../user.service';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,9 +11,11 @@ export class SignInComponent {
   email: string = '';
   password: string = '';
   accountType: string = '';
+  tokenKey = 'token';
+  userIdKey = 'userId';
 
   constructor(
-    private userService: UserService,
+    private authService: AuthenticationService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -26,26 +28,17 @@ export class SignInComponent {
   }
 
   signIn() {
-    this.userService.authenticate(this.email, this.password).subscribe(
+    this.authService.authenticate(this.email, this.password).subscribe(
       response => {
         console.log('Login successful:', response);
 
-        // Redirect based on account type
-        if (response.user.accountType === 'student') {
-          this.router.navigate(['/dashboard']); // Redirect to Student Dashboard
-        } else if (response.user.accountType === 'professor') {
-          this.router.navigate(['/teacher-dashboard']); // Redirect to Teacher Dashboard
-        }
+        // Navigate to dashboard with user ID
+        const userId = response.user.id;
+        this.router.navigate(['/teacher-dashboard'], { queryParams: { userId } });
       },
       error => {
         console.error('Login failed:', error);
-        if (error.message === 'An error occurred during authentication.') {
-          alert('An error occurred on the server. Please try again later.');
-        } else if (error.message === 'Invalid credentials') {
-          alert('Invalid credentials. Please check your email and password.');
-        } else {
-          alert('Login failed: ' + (error.message || 'Unknown error.'));
-        }
+        alert('Login failed: ' + (error.message || 'Unknown error.'));
       }
     );
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ExamService } from '../exam.service';
 import { UserService } from '../user.service';
 
@@ -26,11 +26,13 @@ export class GamifiedExamComponent implements OnInit, AfterViewInit {
 
   countdownInterval: any;
   questionInterval: any;
+  movementInterval: any; // Interval for moving choices
 
   constructor(
     private route: ActivatedRoute,
     private examService: ExamService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router // Inject Router service here
   ) {}
 
   ngOnInit(): void {
@@ -103,6 +105,7 @@ export class GamifiedExamComponent implements OnInit, AfterViewInit {
   displayChoices(): void {
     this.showChoices = true;
     this.shuffleAnswers();
+    this.startChoiceMovement(); // Start moving choices
   }
 
   shuffleAnswers(): void {
@@ -110,29 +113,32 @@ export class GamifiedExamComponent implements OnInit, AfterViewInit {
       this.shuffledAnswers = [...this.questions[this.currentQuestionIndex].answers];
       this.shuffledAnswers.sort(() => Math.random() - 0.5);
 
-      const positions = [
-        { top: '10%', left: '10%' },
-        { top: '10%', left: '70%' },
-        { top: '70%', left: '10%' },
-        { top: '70%', left: '70%' },
-      ];
-
-      positions.sort(() => Math.random() - 0.5);
-
-      // Wait for the DOM to update
+      // Set initial positions
       setTimeout(() => {
         this.choiceElements.forEach((element, index) => {
-          if (index < positions.length) {
+          if (index < this.shuffledAnswers.length) {
             element.nativeElement.style.position = 'absolute';
-            element.nativeElement.style.top = positions[index].top;
-            element.nativeElement.style.left = positions[index].left;
-            // Apply color styling
-            const colors = ['RED', 'BLUE', 'YELLOW', 'GREEN'];
-            element.nativeElement.style.backgroundColor = colors[index];
+            element.nativeElement.style.backgroundColor = this.getRandomColor();
           }
         });
       }, 0);
     }
+  }
+
+  startChoiceMovement(): void {
+    this.movementInterval = setInterval(() => {
+      this.choiceElements.forEach(element => {
+        const randomTop = Math.random() * 80 + 'vh';
+        const randomLeft = Math.random() * 80 + 'vw';
+        element.nativeElement.style.top = randomTop;
+        element.nativeElement.style.left = randomLeft;
+      });
+    }, 1000); // Move every 0.5 seconds
+  }
+
+  getRandomColor(): string {
+    const colors = ['RED', 'BLUE', 'YELLOW', 'GREEN'];
+    return colors[Math.floor(Math.random() * colors.length)];
   }
 
   checkAnswer(selectedAnswer: Answer): void {
@@ -153,16 +159,24 @@ export class GamifiedExamComponent implements OnInit, AfterViewInit {
     console.log('Moving to Question Index:', this.currentQuestionIndex);
 
     if (this.currentQuestionIndex < this.questions.length) {
+      // Continue to the next question
       this.showQuestion = false;
       this.showChoices = false;
       this.selectedAnswer = null;
       this.countdown = 5;
+      clearInterval(this.movementInterval); // Stop movement
       this.startCountdown();
     } else {
+      // Exam completed
       console.log('Exam completed!');
-      // Handle exam completion logic here
-      this.currentQuestionIndex = this.questions.length - 1; // Optional: Keep it within bounds
+      alert('Congratulations! You have completed the exam.');
+      this.redirectToDashboard();
     }
+  }
+
+  private redirectToDashboard(): void {
+    // Redirect to the dashboard route
+    this.router.navigate(['/dashboard']); // Ensure the path is correct and matches your routing configuration
   }
 }
 

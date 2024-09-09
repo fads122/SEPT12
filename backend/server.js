@@ -108,7 +108,7 @@ function handleSubmitAnswer(data, ws) {
     const [rows] = await pool.execute('SELECT answer_id FROM answers WHERE question_id = ? AND is_correct = 1', [questionId]);
     return rows.length > 0 ? rows[0].answer_id : null;
   };
-  
+
   getCorrectAnswer(examId, questionId).then(correctAnswer => {
     if (answerId === correctAnswer) {
       // Calculate ranking based on time taken
@@ -269,19 +269,19 @@ app.get('/protected', authenticateToken, (req, res) => {
   res.json({ user: req.user });
 });
 
-// Create exam route
+// Create exam with subject association
 app.post('/exams', authenticateToken, async (req, res) => {
-  const { title } = req.body;
+  const { title, subjectId } = req.body;
   const userId = req.user.userId;
 
-  if (!title) {
+  if (!title || !subjectId) {
     return res.status(400).send({ message: 'Missing required fields' });
   }
 
   try {
     const examCode = generateExamCode();
-    const sql = 'INSERT INTO exams (title, user_id, exam_code) VALUES (?, ?, ?)';
-    const [result] = await pool.execute(sql, [title, userId, examCode]);
+    const sql = 'INSERT INTO exams (title, user_id, exam_code, subject_id) VALUES (?, ?, ?, ?)';
+    const [result] = await pool.execute(sql, [title, userId, examCode, subjectId]);
 
     res.status(201).send({ examId: result.insertId, examCode });
   } catch (error) {
@@ -289,6 +289,7 @@ app.post('/exams', authenticateToken, async (req, res) => {
     res.status(500).send({ message: 'Error creating exam', error: error.message });
   }
 });
+
 
 app.post('/questions', authenticateToken, async (req, res) => {
   const { examId, questionText, questionType, timeLimit } = req.body;
@@ -616,7 +617,215 @@ app.get('/api/exam-results/:examId', async (req, res) => {
 });
 
 
+// Create subject route
+app.post('/api/subjects', authenticateToken, async (req, res) => {
+  const { subjectName } = req.body;
+  const userId = req.user.userId;
 
+  if (!subjectName) {
+    return res.status(400).send({ message: 'Subject name is required' });
+  }
+
+  try {
+    const sql = 'INSERT INTO subjects (subject_name, user_id) VALUES (?, ?)';
+    const [result] = await pool.execute(sql, [subjectName, userId]);
+
+    res.status(201).send({ subjectId: result.insertId, subjectName });
+  } catch (error) {
+    console.error('Error creating subject:', error);
+    res.status(500).send({ message: 'Error creating subject', error: error.message });
+  }
+});
+
+
+// In your server.js file, replace the existing '/api/subjects/:userId' endpoint with this new one
+app.get('/api/subjects-with-exams/:userId', authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId || userId === '0') {
+    return res.status(400).send({ message: 'Invalid user ID' });
+  }
+
+  console.log('Received request for subjects with exams for userId:', userId);
+
+  try {
+    const sql = `
+      SELECT
+        s.subject_id,
+        s.subject_name,
+        e.exam_id,
+        e.title,
+        e.exam_code
+      FROM
+        subjects s
+      LEFT JOIN
+        exams e ON s.subject_id = e.subject_id AND e.user_id = ?
+      WHERE
+        s.user_id = ?
+      GROUP BY
+        s.subject_id, s.subject_name, e.exam_id, e.title, e.exam_code
+    `;
+
+    const [results] = await pool.execute(sql, [userId, userId]);
+
+    // Group the results by subject
+    const groupedResults = {};
+    results.forEach(row => {
+      if (!groupedResults[row.subject_id]) {
+        groupedResults[row.subject_id] = {
+          subject_id: row.subject_id,
+          subject_name: row.subject_name,
+          exams: []
+        };
+      }
+      if (row.exam_id) {
+        groupedResults[row.subject_id].exams.push({
+          exam_id: row.exam_id,
+          title: row.title,
+          exam_code: row.exam_code
+        });
+      }
+    });
+
+    // Convert the object to an array
+    const finalResult = Object.values(groupedResults);
+
+    res.status(200).json(finalResult);
+  } catch (error) {
+    console.error('Error retrieving subjects with exams:', error);
+
+    if (error instanceof mysql.Error) {
+      res.status(500).send({
+        message: 'Database error',
+        error: error.sqlMessage
+      });
+    } else {
+      res.status(500).send({
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
+  }
+});
+
+
+app.get('/api/exams/created-by/:userId', authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const sql = 'SELECT * FROM exams WHERE user_id = ?';
+    const [exams] = await pool.execute(sql, [userId]);
+
+    res.status(200).json({ exams });
+  } catch (error) {
+    console.error('Error fetching exams:', error);
+    res.status(500).send({ message: 'Server error.' });
+  }
+});
+
+app.get('/api/get-subjects/:userId', authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const sql = `
+      SELECT
+        s.subject_id,
+        s.subject_name,
+        e.exam_id,
+        e.title,
+        e.exam_code
+      FROM
+        subjects s
+      LEFT JOIN
+        exams e ON s.subject_id = e.subject_id AND e.user_id = ?
+      WHERE
+        s.user_id = ?
+      GROUP BY
+        s.subject_id, s.subject_name, e.exam_id, e.title, e.exam_code
+    `;
+
+    const [results] = await pool.execute(sql, [userId, userId]);
+
+    // Group the results by subject_id
+    const groupedResults = {};
+    results.forEach(row => {
+      if (!groupedResults[row.subject_id]) {
+        groupedResults[row.subject_id] = {
+          subject_id: row.subject_id,
+          subject_name: row.subject_name,
+          exams: []
+        };
+      }
+      if (row.exam_id) {
+        groupedResults[row.subject_id].exams.push({
+          exam_id: row.exam_id,
+          title: row.title,
+          exam_code: row.exam_code
+        });
+      }
+    });
+
+    // Convert the object to an array
+    const finalResult = Object.values(groupedResults);
+
+    res.status(200).json(finalResult);
+  } catch (error) {
+    console.error('Error fetching subjects:', error);
+
+    if (error instanceof mysql.Error) {
+      res.status(500).send({
+        message: 'Database error',
+        error: error.sqlMessage
+      });
+    } else {
+      res.status(500).send({
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
+  }
+});
+
+app.put('/api/users/changepassword/:userId', authenticateToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.params.userId;
+
+  console.log('Received password change request for user:', userId);
+
+  if (!currentPassword || !newPassword) {
+    console.log('Error: Both current and new passwords are required');
+    return res.status(400).send({ message: 'Both current and new passwords are required' });
+  }
+
+  try {
+    console.log('Attempting to fetch user from database...');
+    const [userRows] = await pool.execute('SELECT * FROM users WHERE user_id = ?', [userId]);
+    const user = userRows[0];
+
+    if (!user) {
+      console.log('Error: User not found');
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    console.log('User found. Checking current password...');
+    if (!(await bcrypt.compare(currentPassword, user.password))) {
+      console.log('Error: Current password is incorrect');
+      return res.status(401).send({ message: 'Current password is incorrect' });
+    }
+
+    console.log('Current password is correct. Hashing new password...');
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    console.log('New password hashed. Updating user in database...');
+    await pool.execute('UPDATE users SET password = ? WHERE user_id = ?', [hashedNewPassword, userId]);
+
+    console.log('Password updated successfully');
+    res.status(200).send({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).send({ message: 'Error changing password', error: error.message });
+  }
+});
 
 
 server.listen(port, () => {

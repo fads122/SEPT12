@@ -6,37 +6,55 @@
   <title>Choose Account Type</title>
   <style>
     /* Add your CSS styles here */
+    .admin-login-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      display: block;
+      width: 100%;
+      font-size: 16px;
+    }
+    .admin-login-button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
     <mat-toolbar>
-        <img src="assets/logo.png" alt="Logo" class="logo"  style="margin-right: -150px;">
+        <img src="assets/logo.png" alt="Logo" class="logo" style="margin-right: -150px;">
     </mat-toolbar>
 
-<div class="box">
-    <div class="account-type-header">
-        <h2>Choose Your Account Type</h2>
-      </div>
-<div class="gap">
-    <div class="container">
-        <div class="account-type professor">
-          <a (click)="navigateToSignUp('professor')" class="account-type professor">
-          <img src="assets/Group6.png">
-          <i class="student-icon"></i>
-          <h3>Professor</h3>
-          </a>
-      </div>
-      </div>
-  <div class="container">
-      <div class="account-type student">
-        <a (click)="navigateToSignUp('student')" class="account-type student">
-        <img src="assets/Group6.png">
-        <i class="student-icon"></i>
-        <h3>Student</h3>
-        </a>
+    <div class="box">
+        <div class="account-type-header">
+            <h2>Choose Your Account Type</h2>
+        </div>
+        <div class="gap">
+            <div class="container">
+                <div class="account-type professor">
+                    <a (click)="navigateToSignUp('professor')" class="account-type professor">
+                        <img src="assets/Group6.png">
+                        <i class="student-icon"></i>
+                        <h3>Professor</h3>
+                    </a>
+                </div>
+            </div>
+            <div class="container">
+                <div class="account-type student">
+                    <a (click)="navigateToSignUp('student')" class="account-type student">
+                        <img src="assets/Group6.png">
+                        <i class="student-icon"></i>
+                        <h3>Student</h3>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Admin login button -->
+        <button class="admin-login-button" (click)="navigateToAdminLogin()">Admin Login</button>
     </div>
-    </div>
-  </div>
-</div>
 </body>
 </html>

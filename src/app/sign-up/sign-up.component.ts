@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service'; // Updated service import
+import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -10,23 +10,33 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class SignUpComponent implements OnInit {
   email: string = '';
   password: string = '';
-  accountType: string = ''; // Ensure this is set correctly
+  accountType: string = '';
 
   constructor(
-    private userService: UserService, // Updated service injection
+    private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(params => {
-      this.accountType = params['accountType'] || ''; // Default to an empty string if undefined
+      this.accountType = params['accountType'] || '';
     });
   }
 
   async signUp() {
-    if (!this.email || !this.password || !this.accountType) {
-      console.error('Please fill in all required fields.');
+    if (!this.validateEmail()) {
+      alert('The email is not valid. It must end with @gmail.com.');
+      return;
+    }
+
+    if (!this.validatePassword()) {
+      alert('The password must contain at least one number and be at least 8 characters long.');
+      return;
+    }
+
+    if (!this.accountType) {
+      alert('Account type is required.');
       return;
     }
 
@@ -39,7 +49,17 @@ export class SignUpComponent implements OnInit {
       this.router.navigate(['/sign-in']);
     } catch (error) {
       console.error('Error signing up:', error);
+      alert('This email is already used.');
     }
   }
 
+  validateEmail(): boolean {
+    const emailRegex = /@gmail\.com$/;
+    return emailRegex.test(this.email);
+  }
+
+  validatePassword(): boolean {
+    const passwordRegex = /^(?=.*[0-9]).{8,}$/;
+    return passwordRegex.test(this.password);
+  }
 }
